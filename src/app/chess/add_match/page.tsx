@@ -50,8 +50,8 @@ export default function AddMatch() {
         onSubmit={handleSubmit}
       >
         <datalist id="player">
-          {players.map((name) => (
-            <option value={name} />
+          {players.map((name, index) => (
+            <option key={index} value={name} />
           ))}
         </datalist>
         <div className="mb-4">
