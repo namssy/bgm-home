@@ -41,7 +41,7 @@ export default function AddMatch() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100 px-4 sm:px-0">
+    <div className="flex flex-col justify-center items-center bg-gray-100 px-4 sm:px-0">
       <h1 className="text-3xl font-semibold mb-6 text-center">
         Add Match Result
       </h1>
