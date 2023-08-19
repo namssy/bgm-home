@@ -19,22 +19,23 @@ export default function ChessLayout({
         <header className="bg-gray-800 text-white py-4 px-6">
           <nav className="flex justify-between">
             <div>
-              <Link className="text-2xl font-semibold" href="/">
-                ChessApp
-              </Link>
+              <div className="text-2xl font-semibold">Chess App</div>
             </div>
             <div>
               <Link
                 className="mr-5 hover:text-gray-400"
-                href="/chess/add_match"
+                href={"/chess/add_match"}
               >
                 Add Match
               </Link>
-              <Link className="hover:text-gray-400" href="/chess/leaderboard">
+              <Link
+                className="mr-5 hover:text-gray-400"
+                href={"/chess/leaderboard"}
+              >
                 Leaderboard
               </Link>
-              <Link className="hover:text-gray-400" href="/chess/leaderboard">
-                Leaderboard
+              <Link className="hover:text-gray-400" href={"/chess/log"}>
+                Logs
               </Link>
             </div>
           </nav>
