@@ -28,24 +28,28 @@ export default function MatchLog() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100">
-      <h1 className="text-3xl font-semibold mb-6">Match Results Log</h1>
-      <table className="bg-white p-6 rounded shadow-md w-96">
+    <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100 px-4 sm:px-0">
+      <h1 className="text-3xl font-semibold mb-6 text-center">
+        Match Results Log
+      </h1>
+      <table className="bg-white p-6 rounded shadow-md w-full sm:max-w-2xl overflow-x-auto">
         <thead>
           <tr>
-            <th>Player A</th>
-            <th>Player B</th>
-            <th>Result</th>
-            <th>Timestamp</th>
+            <th className="text-center">Player A</th>
+            <th className="text-center">Player B</th>
+            <th className="text-center">Result</th>
+            <th className="hidden sm:table-cell text-center">Timestamp</th>
           </tr>
         </thead>
         <tbody>
           {matches.map((match, index) => (
             <tr key={index}>
-              <td>{match.player_a}</td>
-              <td>{match.player_b}</td>
-              <td>{match.result}</td>
-              <td>{new Date(match.timestamp).toLocaleString()}</td>
+              <td className="text-center">{match.player_a}</td>
+              <td className="text-center">{match.player_b}</td>
+              <td className="text-center">{match.result}</td>
+              <td className="hidden sm:table-cell text-center">
+                {new Date(match.timestamp).toLocaleString()}
+              </td>
             </tr>
           ))}
         </tbody>

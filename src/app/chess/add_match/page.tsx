@@ -1,10 +1,23 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { ChessPlayer } from "@/types/chess";
 
 export default function AddMatch() {
   const [playerA, setPlayerA] = useState("");
   const [playerB, setPlayerB] = useState("");
   const [result, setResult] = useState("");
+
+  const [players, setPlayers] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchPlayers = async () => {
+      const response = await fetch("/chess/api/players");
+      const data = (await response.json()) as ChessPlayer[];
+      setPlayers(data.map(({ name }) => name));
+    };
+
+    fetchPlayers();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,22 +41,31 @@ export default function AddMatch() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100">
-      <h1 className="text-3xl font-semibold mb-6">Add Match Result</h1>
+    <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100 px-4 sm:px-0">
+      <h1 className="text-3xl font-semibold mb-6 text-center">
+        Add Match Result
+      </h1>
       <form
-        className="bg-white p-6 rounded shadow-md w-96"
+        className="bg-white p-6 rounded shadow-md w-full sm:max-w-md"
         onSubmit={handleSubmit}
       >
+        <datalist id="player">
+          {players.map((name) => (
+            <option value={name} />
+          ))}
+        </datalist>
         <div className="mb-4">
           <label className="block text-sm font-bold mb-2" htmlFor="playerA">
             Player A:
           </label>
           <input
             type="text"
+            list="player"
             id="playerA"
             value={playerA}
             onChange={(e) => setPlayerA(e.target.value)}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            autoComplete="off"
             required
           />
         </div>
@@ -52,11 +74,13 @@ export default function AddMatch() {
             Player B:
           </label>
           <input
-            type="text"
+            type="player"
             id="playerB"
+            list="player"
             value={playerB}
             onChange={(e) => setPlayerB(e.target.value)}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            autoComplete="off"
             required
           />
         </div>
@@ -79,7 +103,7 @@ export default function AddMatch() {
         </div>
         <button
           type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full sm:w-auto"
         >
           Add Match
         </button>

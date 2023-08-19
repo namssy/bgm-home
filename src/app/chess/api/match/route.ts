@@ -64,15 +64,16 @@ export async function POST(req: Request) {
         scoreA = 1;
         break;
     }
+    const scoreB = 2 - scoreA;
 
-    const newRatingA = computeElo(ratingA, ratingB, scoreA);
-    const newRatingB = computeElo(ratingB, ratingA, 1 - scoreA);
+    const newRatingA = computeElo(ratingA, ratingB, scoreA / 2);
+    const newRatingB = computeElo(ratingB, ratingA, scoreB / 2);
 
     // Update ratings in the database
     const updateQuery =
       "UPDATE players SET rating = $1, score = score + $2 WHERE name = $3";
     await pool.query(updateQuery, [newRatingA, scoreA, playerA]);
-    await pool.query(updateQuery, [newRatingB, 2 - scoreA, playerB]);
+    await pool.query(updateQuery, [newRatingB, scoreB, playerB]);
 
     // Add the match result to a separate table (if you have one)
     await pool.query(
