@@ -36,6 +36,9 @@ export default function AddMatch() {
 
     if (response.ok) {
       alert("Match added successfully!");
+      setPlayerA("");
+      setPlayerB("");
+      setResult("");
     } else {
       alert(data.error);
     }
@@ -51,8 +54,8 @@ export default function AddMatch() {
         onSubmit={handleSubmit}
       >
         <div className="mb-4">
-          <label className="block text-sm font-bold mb-2" htmlFor="playerA">
-            White:
+          <label className="block text-md font-bold mb-2" htmlFor="playerA">
+            ♘ White:
           </label>
           <AutoSuggestInput
             id="playerA"
@@ -65,8 +68,8 @@ export default function AddMatch() {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-bold mb-2" htmlFor="playerB">
-            Black:
+          <label className="block text-md font-bold mb-2" htmlFor="playerB">
+            ♞ Black:
           </label>
           <AutoSuggestInput
             type="player"
@@ -79,7 +82,7 @@ export default function AddMatch() {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-bold mb-2" htmlFor="result">
+          <label className="block text-md font-bold mb-2" htmlFor="result">
             Result:
           </label>
           <select
@@ -89,7 +92,9 @@ export default function AddMatch() {
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             required
           >
-            <option value="">Select result</option>
+            <option disabled value="">
+              Select result
+            </option>
             <option value="winA">White won</option>
             <option value="winB">Black won</option>
             <option value="draw">Draw</option>
