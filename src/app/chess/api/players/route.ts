@@ -10,6 +10,7 @@ const pool = new Pool({
   port: Number(process.env.DB_PORT),
 });
 
+export const dynamic = "force-dynamic";
 export async function GET() {
   try {
     // Score 기준으로 플레이어 목록 가져오기

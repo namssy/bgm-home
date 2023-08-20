@@ -97,7 +97,7 @@ export async function POST(req: Request) {
     );
   }
 }
-
+export const dynamic = "force-dynamic";
 export async function GET() {
   try {
     const { rows: matches } = await pool.query(
