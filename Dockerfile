@@ -34,10 +34,7 @@ FROM node:18-slim
 WORKDIR /usr/src/app
 
 # Copy only the necessary files from the builder stage
-COPY --from=builder /usr/src/app/package.json ./
-COPY --from=builder /usr/src/app/yarn.lock ./
-COPY --from=builder /usr/src/app/.next ./.next
-COPY --from=builder /usr/src/app/node_modules ./node_modules
+COPY --from=builder /usr/src/app ./
 
 # Set environment variables
 ARG DB_USER
