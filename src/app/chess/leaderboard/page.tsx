@@ -1,71 +1,33 @@
-"use client";
-import { useState, useEffect } from "react";
-import { ChessPlayer } from "@/types/chess";
+import LeaderboardContainer from "@/components/leaderboard/LeaderboardContainer";
+import { NextResponse } from "next/server";
+import { Pool } from "pg";
 
-export default function Leaderboard() {
-  const [playersByScore, setPlayersByScore] = useState<ChessPlayer[]>([]);
-  const [playersByRating, setPlayersByRating] = useState<ChessPlayer[]>([]);
+const pool = new Pool({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_DATABASE,
+  password: process.env.DB_PASSWORD,
+  port: Number(process.env.DB_PORT),
+});
 
-  useEffect(() => {
-    const fetchLeaderboard = async () => {
-      const response = await fetch("/chess/api/players", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+export default async function Leaderboard() {
+  try {
+    // Score 기준으로 플레이어 목록 가져오기
+    const { rows: players } = await pool.query(
+      "SELECT name, score, ROUND(rating::numeric, 0) as rating FROM players",
+    );
 
-      const data = (await response.json()) as ChessPlayer[];
-
-      if (response.ok) {
-        setPlayersByScore(data.sort((a, b) => b.score - a.score));
-        setPlayersByRating(data.sort((a, b) => b.rating - a.rating));
-      }
-    };
-
-    fetchLeaderboard();
-  }, []);
-
-  return (
-    <>
-      <h1 className="text-3xl font-semibold mb-6 text-center">
-        Chess Leaderboard
-      </h1>
-      <h2 className="text-2xl font-semibold mb-4">By Score</h2>
-      <table className="bg-white p-6 rounded shadow-md w-full sm:max-w-md mb-8 overflow-x-auto">
-        <thead>
-          <tr>
-            <th className="text-center">Name</th>
-            <th className="text-center">Score</th>
-          </tr>
-        </thead>
-        <tbody>
-          {playersByScore.map((player, index) => (
-            <tr key={index}>
-              <td className="text-center">{player.name}</td>
-              <td className="text-center">{player.score}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <h2 className="text-2xl font-semibold mb-4">By Rating</h2>
-      <table className="bg-white p-6 rounded shadow-md w-full sm:max-w-md overflow-x-auto">
-        <thead>
-          <tr>
-            <th className="text-center">Name</th>
-            <th className="text-center">Rating</th>
-          </tr>
-        </thead>
-        <tbody>
-          {playersByRating.map((player, index) => (
-            <tr key={index}>
-              <td className="text-center">{player.name}</td>
-              <td className="text-center">{player.rating}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </>
-  );
+    return (
+      <LeaderboardContainer
+        playersByScore={players.sort((a, b) => b.score - a.score)}
+        playersByRating={players.sort((a, b) => b.rating - a.rating)}
+      />
+    );
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
+  }
 }

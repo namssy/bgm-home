@@ -21,12 +21,12 @@ export default function ChessLayout({
               <Link className="hover:text-gray-400" href={"/chess/add_match"}>
                 Add Match
               </Link>
-              <Link className="hover:text-gray-400" href={"/chess/leaderboard"}>
+              <a className="hover:text-gray-400" href={"/chess/leaderboard"}>
                 Leaderboard
-              </Link>
-              <Link className="hover:text-gray-400" href={"/chess/log"}>
+              </a>
+              <a className="hover:text-gray-400" href={"/chess/log"}>
                 Logs
-              </Link>
+              </a>
             </div>
           </nav>
         </header>

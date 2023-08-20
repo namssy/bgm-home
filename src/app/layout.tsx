@@ -12,12 +12,5 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <html lang="en">
-      <head>
-        <meta name="google" content="notranslate" />
-      </head>
-      {children}
-    </html>
-  );
+  return <html lang="en">{children}</html>;
 }
