@@ -1,5 +1,6 @@
 import { Pool } from "pg";
 import { NextResponse } from "next/server";
+import { ChessMatchResult } from "@/types/chess";
 
 // PostgreSQL 연결 설정
 const pool = new Pool({
@@ -20,7 +21,7 @@ export async function POST(req: Request) {
   const { playerA, playerB, result } = (await req.json()) as {
     playerA: string;
     playerB: string;
-    result: "winA" | "winB" | "draw";
+    result: ChessMatchResult;
   };
 
   if (

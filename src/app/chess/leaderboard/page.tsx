@@ -27,11 +27,10 @@ export default function Leaderboard() {
   }, []);
 
   return (
-    <div className="flex flex-col justify-center items-center bg-gray-100 px-4 sm:px-0">
+    <>
       <h1 className="text-3xl font-semibold mb-6 text-center">
         Chess Leaderboard
       </h1>
-
       <h2 className="text-2xl font-semibold mb-4">By Score</h2>
       <table className="bg-white p-6 rounded shadow-md w-full sm:max-w-md mb-8 overflow-x-auto">
         <thead>
@@ -67,6 +66,6 @@ export default function Leaderboard() {
           ))}
         </tbody>
       </table>
-    </div>
+    </>
   );
 }

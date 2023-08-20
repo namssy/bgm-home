@@ -3,3 +3,5 @@ export type ChessPlayer = {
   score: number;
   rating: number;
 };
+
+export type ChessMatchResult = "winA" | "winB" | "draw";

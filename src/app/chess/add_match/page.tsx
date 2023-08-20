@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { ChessPlayer } from "@/types/chess";
+import AutoSuggestInput from "@/components/AutoSuggestInput";
 
 export default function AddMatch() {
   const [playerA, setPlayerA] = useState("");
@@ -41,7 +42,7 @@ export default function AddMatch() {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center bg-gray-100 px-4 sm:px-0">
+    <>
       <h1 className="text-3xl font-semibold mb-6 text-center">
         Add Match Result
       </h1>
@@ -49,37 +50,30 @@ export default function AddMatch() {
         className="bg-white p-6 rounded shadow-md w-full sm:max-w-md"
         onSubmit={handleSubmit}
       >
-        <datalist id="player">
-          {players.map((name, index) => (
-            <option key={index} value={name} />
-          ))}
-        </datalist>
         <div className="mb-4">
           <label className="block text-sm font-bold mb-2" htmlFor="playerA">
-            Player A:
+            White:
           </label>
-          <input
-            type="text"
-            list="player"
+          <AutoSuggestInput
             id="playerA"
-            value={playerA}
-            onChange={(e) => setPlayerA(e.target.value)}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            type="text"
+            list={players}
             autoComplete="off"
             required
+            onChange={setPlayerA}
+            value={playerA}
           />
         </div>
         <div className="mb-4">
           <label className="block text-sm font-bold mb-2" htmlFor="playerB">
-            Player B:
+            Black:
           </label>
-          <input
+          <AutoSuggestInput
             type="player"
             id="playerB"
-            list="player"
+            list={players}
             value={playerB}
-            onChange={(e) => setPlayerB(e.target.value)}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            onChange={setPlayerB}
             autoComplete="off"
             required
           />
@@ -96,8 +90,8 @@ export default function AddMatch() {
             required
           >
             <option value="">Select result</option>
-            <option value="winA">Player A won</option>
-            <option value="winB">Player B won</option>
+            <option value="winA">White won</option>
+            <option value="winB">Black won</option>
             <option value="draw">Draw</option>
           </select>
         </div>
@@ -108,6 +102,6 @@ export default function AddMatch() {
           Add Match
         </button>
       </form>
-    </div>
+    </>
   );
 }
