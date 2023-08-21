@@ -31,7 +31,7 @@ export default function ChessLayout({
           </nav>
         </header>
         <main className="w-screen overflow-y-auto flex md:h-[calc(100vh_-_64px)] h-[calc(100vh_-_104px)]">
-          <div className="w-full flex flex-col justify-center items-center bg-gray-100 px-4 sm:px-0">
+          <div className="w-full flex flex-col justify-center items-center bg-gray-100 dark:bg-gray-800 px-4 sm:px-0">
             {children}
           </div>
         </main>

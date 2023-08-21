@@ -50,12 +50,12 @@ export default function AddMatch() {
         Add Match Result
       </h1>
       <form
-        className="bg-white p-6 rounded shadow-md w-full sm:max-w-md"
+        className="bg-white dark:bg-gray-600 p-6 rounded shadow-md w-full sm:max-w-md"
         onSubmit={handleSubmit}
       >
         <div className="mb-4">
           <label className="block text-md font-bold mb-2" htmlFor="playerA">
-            ♘ White:
+            White <span className="pl-1 pr-1 text-white bg-black">♞</span>:
           </label>
           <AutoSuggestInput
             id="playerA"
@@ -69,7 +69,7 @@ export default function AddMatch() {
         </div>
         <div className="mb-4">
           <label className="block text-md font-bold mb-2" htmlFor="playerB">
-            ♞ Black:
+            Black <span className="pl-1 pr-1 text-black bg-white">♞</span>:
           </label>
           <AutoSuggestInput
             type="player"

@@ -12,7 +12,7 @@ const LogContainer = ({ matches }: { matches: ChessMatch[] }) => {
       <h1 className="text-3xl font-semibold mb-6 text-center">
         Match Results Log
       </h1>
-      <table className="bg-white p-6 rounded shadow-md w-full sm:max-w-2xl overflow-x-auto">
+      <table className="bg-white dark:bg-gray-600 p-6 rounded shadow-md w-full sm:max-w-2xl overflow-x-auto">
         <thead>
           <tr>
             <th className="text-center">White</th>

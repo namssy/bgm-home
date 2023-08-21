@@ -14,7 +14,7 @@ export default function LeaderboardContainer({
         Chess Leaderboard
       </h1>
       <h2 className="text-2xl font-semibold mb-4">By Score</h2>
-      <table className="bg-white p-6 rounded shadow-md w-full sm:max-w-md mb-8 overflow-x-auto">
+      <table className="bg-white dark:bg-gray-600 p-6 rounded shadow-md w-full sm:max-w-md mb-8 overflow-x-auto">
         <thead>
           <tr>
             <th className="text-center">Name</th>
@@ -32,7 +32,7 @@ export default function LeaderboardContainer({
       </table>
 
       <h2 className="text-2xl font-semibold mb-4">By Rating</h2>
-      <table className="bg-white p-6 rounded shadow-md w-full sm:max-w-md overflow-x-auto">
+      <table className="bg-white dark:bg-gray-600 p-6 rounded shadow-md w-full sm:max-w-md overflow-x-auto">
         <thead>
           <tr>
             <th className="text-center">Name</th>
