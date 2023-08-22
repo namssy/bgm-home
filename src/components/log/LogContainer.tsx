@@ -12,7 +12,7 @@ const LogContainer = ({ matches }: { matches: ChessMatch[] }) => {
       <h1 className="text-3xl font-semibold mb-6 text-center">
         Match Results Log
       </h1>
-      <div className="relative overflow-x-auto">
+      <div className="relative overflow-x-auto sm:rounded-lg">
         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
@@ -26,7 +26,10 @@ const LogContainer = ({ matches }: { matches: ChessMatch[] }) => {
           </thead>
           <tbody>
             {matches.map((match, index) => (
-              <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+              <tr
+                key={index}
+                className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+              >
                 <td className="px-6 py-4text-center">{match.player_a}</td>
                 <td className="px-6 py-4text-center">{match.player_b}</td>
                 <td className="px-6 py-4text-center">{RESULT[match.result]}</td>

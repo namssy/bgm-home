@@ -5,7 +5,7 @@ import Link from "next/link";
 
 import { usePathname } from "next/navigation";
 import classNames from "classnames";
-import { Disclosure, Menu, Transition } from "@headlessui/react";
+import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -24,15 +24,10 @@ export default function ChessLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-
-  console.log("pathname ", pathname);
-
   return (
     <html lang="en">
-      <body
-        className={`${inter.className} h-screen bg-gray-100 dark:bg-gray-900`}
-      >
-        <div className="min-h-full flex flex-col">
+      <body className={`${inter.className} h-screen`}>
+        <div className="min-h-full flex flex-col bg-gray-100 dark:bg-gray-900">
           <Disclosure as="nav" className="bg-gray-800">
             {({ open }) => (
               <>

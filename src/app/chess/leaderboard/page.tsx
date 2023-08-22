@@ -6,10 +6,13 @@ export const dynamic = "force-dynamic";
 
 export default async function Leaderboard() {
   const players = await getPlayers();
+
   return (
     <LeaderboardContainer
-      playersByScore={players.sort((a, b) => b.score - a.score)}
-      playersByRating={players.sort((a, b) => b.rating - a.rating)}
+      playersByScore={[...players.sort((a, b) => b.score - a.score)]}
+      playersByRating={[
+        ...players.sort((a, b) => Number(b.rating) - Number(a.rating)),
+      ]}
     />
   );
 }
