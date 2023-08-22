@@ -49,10 +49,7 @@ export default function AddMatch() {
       <h1 className="text-3xl font-semibold mb-6 text-center">
         Add Match Result
       </h1>
-      <form
-        className="bg-white dark:bg-gray-600 p-6 rounded shadow-md w-full sm:max-w-md"
-        onSubmit={handleSubmit}
-      >
+      <form className="p-6 w-full sm:max-w-md" onSubmit={handleSubmit}>
         <div className="mb-4">
           <label className="block text-md font-bold mb-2" htmlFor="playerA">
             White <span className="pl-1 pr-1 text-white bg-black">♞</span>:
@@ -81,7 +78,7 @@ export default function AddMatch() {
             required
           />
         </div>
-        <div className="mb-4">
+        <div className="mb-5">
           <label className="block text-md font-bold mb-2" htmlFor="result">
             Result:
           </label>
@@ -102,7 +99,7 @@ export default function AddMatch() {
         </div>
         <button
           type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full sm:w-auto"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
         >
           Add Match
         </button>

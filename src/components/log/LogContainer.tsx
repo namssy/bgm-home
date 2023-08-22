@@ -12,28 +12,32 @@ const LogContainer = ({ matches }: { matches: ChessMatch[] }) => {
       <h1 className="text-3xl font-semibold mb-6 text-center">
         Match Results Log
       </h1>
-      <table className="bg-white dark:bg-gray-600 p-6 rounded shadow-md w-full sm:max-w-2xl overflow-x-auto">
-        <thead>
-          <tr>
-            <th className="text-center">White</th>
-            <th className="text-center">Black</th>
-            <th className="text-center">Result</th>
-            <th className="hidden sm:table-cell text-center">Timestamp</th>
-          </tr>
-        </thead>
-        <tbody>
-          {matches.map((match, index) => (
-            <tr key={index}>
-              <td className="text-center">{match.player_a}</td>
-              <td className="text-center">{match.player_b}</td>
-              <td className="text-center">{RESULT[match.result]}</td>
-              <td className="hidden sm:table-cell text-center">
-                {new Date(match.timestamp).toLocaleString()}
-              </td>
+      <div className="relative overflow-x-auto">
+        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              <th className="px-6 py-3 text-center">White</th>
+              <th className="px-6 py-3 text-center">Black</th>
+              <th className="px-6 py-3 text-center">Result</th>
+              <th className="px-6 py-3 hidden sm:table-cell text-center">
+                Timestamp
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {matches.map((match, index) => (
+              <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <td className="px-6 py-4text-center">{match.player_a}</td>
+                <td className="px-6 py-4text-center">{match.player_b}</td>
+                <td className="px-6 py-4text-center">{RESULT[match.result]}</td>
+                <td className="px-6 py-4 hidden sm:table-cell text-center">
+                  {new Date(match.timestamp).toLocaleString()}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </>
   );
 };
