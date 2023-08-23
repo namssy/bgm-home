@@ -55,6 +55,9 @@ const AutoSuggestInput = ({
         value,
         onChange: (_, { newValue }) => onChange(newValue),
       }}
+      containerProps={{
+        className: "react-autosuggest__container text-gray-700",
+      }}
       getSuggestionValue={getSuggestionValue}
       renderSuggestion={renderSuggestion}
     />
