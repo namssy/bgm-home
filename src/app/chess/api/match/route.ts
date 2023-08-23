@@ -17,6 +17,31 @@ function computeElo(ratingA: number, ratingB: number, scoreA: number): number {
   return ratingA + k * (scoreA - expectedScoreA);
 }
 
+const getScore = (result: ChessMatchResult) => {
+  switch (result) {
+    case "winA":
+      return 2;
+    case "winB":
+      return 0;
+    case "draw":
+      return 1;
+  }
+};
+
+export const getRatingDiff = ({
+  result,
+  ratingA,
+  ratingB,
+}: {
+  result: ChessMatchResult;
+  ratingA: number;
+  ratingB: number;
+}) => {
+  const scoreA = getScore(result);
+  const newRatingA = computeElo(ratingA, ratingB, scoreA / 2);
+  return [scoreA, newRatingA - ratingA];
+};
+
 export async function POST(req: Request) {
   const { playerA, playerB, result } = (await req.json()) as {
     playerA: string;
@@ -52,42 +77,23 @@ export async function POST(req: Request) {
     const ratingA = players.find((p) => p.name === playerA)?.rating ?? 1200;
     const ratingB = players.find((p) => p.name === playerB)?.rating ?? 1200;
 
-    // Determine score based on result
-    let scoreA;
-    switch (result) {
-      case "winA":
-        scoreA = 2;
-        break;
-      case "winB":
-        scoreA = 0;
-        break;
-      case "draw":
-        scoreA = 1;
-        break;
-    }
+    const [scoreA, diff] = getRatingDiff({ result, ratingA, ratingB });
     const scoreB = 2 - scoreA;
-
-    const newRatingA = computeElo(ratingA, ratingB, scoreA / 2);
-    const newRatingB = computeElo(ratingB, ratingA, scoreB / 2);
 
     // Update ratings in the database
     const updateQuery =
       "UPDATE players SET rating = $1, score = score + $2 WHERE name = $3";
-    await pool.query(updateQuery, [newRatingA, scoreA, playerA]);
-    await pool.query(updateQuery, [newRatingB, scoreB, playerB]);
-
+    await pool.query(updateQuery, [ratingA + diff, scoreA, playerA]);
+    await pool.query(updateQuery, [ratingB - diff, scoreB, playerB]);
     // Add the match result to a separate table (if you have one)
     await pool.query(
-      "INSERT INTO matches (player_A, player_B, result) VALUES ($1, $2, $3)",
-      [playerA, playerB, result],
+      "INSERT INTO matches (player_A, player_B, result, diff) VALUES ($1, $2, $3, $4)",
+      [playerA, playerB, result, diff],
     );
 
     await pool.query("COMMIT"); // 트랜잭션 커밋
 
-    return NextResponse.json({
-      playerA: { name: playerA, newRating: newRatingA },
-      playerB: { name: playerB, newRating: newRatingB },
-    });
+    return NextResponse.json("");
   } catch (error) {
     console.error(error);
     await pool.query("ROLLBACK"); // 에러가 발생하면 롤백
@@ -101,7 +107,7 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   try {
     const { rows: matches } = await pool.query(
-      "SELECT * FROM matches ORDER BY timestamp DESC",
+      "SELECT *, ROUND(diff::numeric, 0) as diff FROM matches ORDER BY timestamp DESC",
     );
     return NextResponse.json({ matches });
   } catch (error) {
