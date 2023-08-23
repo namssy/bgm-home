@@ -1,5 +1,6 @@
 import "server-only";
 import { Pool } from "pg";
+import { ChessMatch } from "@/types/chess";
 
 const pool = new Pool({
   user: process.env.DB_USER,
@@ -9,15 +10,15 @@ const pool = new Pool({
   port: Number(process.env.DB_PORT),
 });
 
-export const getMatch = async () => {
-  'use server'
+export const getMatch = async (): Promise<ChessMatch[]> => {
+  "use server";
   try {
-  const { rows } = await pool.query(
-    "SELECT * FROM matches ORDER BY timestamp DESC",
-  );
-  return rows ?? [];
+    const { rows } = await pool.query(
+      "SELECT *, ROUND(diff::numeric, 0) as diff FROM matches ORDER BY timestamp DESC",
+    );
+    return rows ?? [];
   } catch (error) {
-    console.error(error)
-    return []
+    console.error(error);
+    return [];
   }
 };

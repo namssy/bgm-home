@@ -1,10 +1,21 @@
-'use client'
+"use client";
 import { ChessMatch, ChessMatchResult } from "@/types/chess";
+import classNames from "classnames";
 
 const RESULT: Record<ChessMatchResult, string> = {
   winA: "White won",
   winB: "Black won",
   draw: "Draw",
+};
+
+const DeltaRating = ({ value }: { value: number }) => {
+  return (
+    <span
+      className={classNames(value >= 0 ? "text-green-500" : "text-red-600")}
+    >
+      {value}
+    </span>
+  );
 };
 
 const LogContainer = ({ matches }: { matches: ChessMatch[] }) => {
@@ -20,27 +31,32 @@ const LogContainer = ({ matches }: { matches: ChessMatch[] }) => {
               <th className="px-6 py-3 text-center">White</th>
               <th className="px-6 py-3 text-center">Black</th>
               <th className="px-6 py-3 text-center">Result</th>
-              <th className="px-6 py-3 text-center">Rating</th>
+
               <th className="px-6 py-3 hidden sm:table-cell text-center">
                 Timestamp
               </th>
             </tr>
           </thead>
           <tbody>
-            {matches.map((match, index) => (
-              <tr
-                key={index}
-                className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-              >
-                <td className="px-6 py-4text-center">{match.player_a}</td>
-                <td className="px-6 py-4text-center">{match.player_b}</td>
-                <td className="px-6 py-4text-center">{RESULT[match.result]}</td>
-                <td className="px-6 py-4text-center">±{match.diff}</td>
-                <td className="px-6 py-4 hidden sm:table-cell text-center">
-                  {new Date(match.timestamp).toLocaleString()}
-                </td>
-              </tr>
-            ))}
+            {matches.map(
+              ({ player_a, player_b, diff, result, timestamp }, index) => (
+                <tr
+                  key={index}
+                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                >
+                  <td className="px-6 py-4text-center">
+                    {player_a}(<DeltaRating value={diff} />)
+                  </td>
+                  <td className="px-6 py-4text-center">
+                    {player_b}(<DeltaRating value={-diff} />)
+                  </td>
+                  <td className="px-6 py-4text-center">{RESULT[result]}</td>
+                  <td className="px-6 py-4 hidden sm:table-cell text-center">
+                    {new Date(timestamp).toLocaleString()}
+                  </td>
+                </tr>
+              ),
+            )}
           </tbody>
         </table>
       </div>
