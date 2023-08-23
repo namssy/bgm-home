@@ -1,3 +1,4 @@
+'use client'
 import { ChessMatch, ChessMatchResult } from "@/types/chess";
 
 const RESULT: Record<ChessMatchResult, string> = {

@@ -11,9 +11,14 @@ const pool = new Pool({
 });
 
 export const getPlayers = async (): Promise<ChessPlayer[]> => {
-  "use server";
-  const { rows } = await pool.query(
-    "SELECT name, score::float / 2 as score, ROUND(rating::numeric, 0) as rating FROM players",
-  );
-  return rows;
+  'use server'
+  try {
+    const { rows } = await pool.query(
+        "SELECT name, score::float / 2 as score, ROUND(rating::numeric, 0) as rating FROM players",
+    );
+    return rows ?? [];
+  } catch (error) {
+    console.error(error)
+    return []
+  }
 };

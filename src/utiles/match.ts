@@ -10,8 +10,14 @@ const pool = new Pool({
 });
 
 export const getMatch = async () => {
-  const { rows: matches } = await pool.query(
+  'use server'
+  try {
+  const { rows } = await pool.query(
     "SELECT * FROM matches ORDER BY timestamp DESC",
   );
-  return matches;
+  return rows ?? [];
+  } catch (error) {
+    console.error(error)
+    return []
+  }
 };
