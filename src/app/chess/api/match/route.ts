@@ -77,9 +77,10 @@ export async function POST(req: Request) {
     await pool.query(updateQuery, [newRatingB, scoreB, playerB]);
 
     // Add the match result to a separate table (if you have one)
+    const diff = (newRatingA - newRatingB) / 2;
     await pool.query(
-      "INSERT INTO matches (player_A, player_B, result) VALUES ($1, $2, $3)",
-      [playerA, playerB, result],
+      "INSERT INTO matches (player_A, player_B, result, diff) VALUES ($1, $2, $3, $4)",
+      [playerA, playerB, result, diff],
     );
 
     await pool.query("COMMIT"); // 트랜잭션 커밋

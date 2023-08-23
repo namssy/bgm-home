@@ -20,6 +20,7 @@ const LogContainer = ({ matches }: { matches: ChessMatch[] }) => {
               <th className="px-6 py-3 text-center">White</th>
               <th className="px-6 py-3 text-center">Black</th>
               <th className="px-6 py-3 text-center">Result</th>
+              <th className="px-6 py-3 text-center">Rating</th>
               <th className="px-6 py-3 hidden sm:table-cell text-center">
                 Timestamp
               </th>
@@ -34,6 +35,7 @@ const LogContainer = ({ matches }: { matches: ChessMatch[] }) => {
                 <td className="px-6 py-4text-center">{match.player_a}</td>
                 <td className="px-6 py-4text-center">{match.player_b}</td>
                 <td className="px-6 py-4text-center">{RESULT[match.result]}</td>
+                <td className="px-6 py-4text-center">±{match.diff}</td>
                 <td className="px-6 py-4 hidden sm:table-cell text-center">
                   {new Date(match.timestamp).toLocaleString()}
                 </td>

@@ -11,4 +11,5 @@ export interface ChessMatch {
   player_b: string;
   result: ChessMatchResult;
   timestamp: string;
+  diff: number;
 }
