@@ -45,14 +45,14 @@ const LogContainer = ({ matches }: { matches: ChessMatch[] }) => {
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
                 >
                   <td className="px-6 py-4text-center">
-                    {player_a}(<DeltaRating value={diff} />)
+                    {player_a}(<DeltaRating value={Math.round(diff)} />)
                   </td>
                   <td className="px-6 py-4text-center">
-                    {player_b}(<DeltaRating value={-diff} />)
+                    {player_b}(<DeltaRating value={Math.round(-diff)} />)
                   </td>
                   <td className="px-6 py-4text-center">{RESULT[result]}</td>
                   <td className="px-6 py-4 hidden sm:table-cell text-center">
-                    {new Date(timestamp).toLocaleString()}
+                    {timestamp ? new Date(timestamp).toLocaleString() : "-"}
                   </td>
                 </tr>
               ),

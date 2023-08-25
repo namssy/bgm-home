@@ -28,8 +28,4 @@ jobs:
           push: true
           tags: namssy/bgm-home:latest,namssy/bgm-home:${{ steps.date.outputs.date }}
           build-args: |
-            DB_USER=${{ secrets.DB_USER }}
-            DB_HOST=${{ secrets.DB_HOST }}
-            DB_DATABASE=${{ secrets.DB_DATABASE }}
-            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-            DB_PORT=${{ secrets.DB_PORT }}
+            DATABASE_URL=${{ secrets.DATABASE_URL }}

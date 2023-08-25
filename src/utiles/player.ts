@@ -1,24 +1,19 @@
-import "server-only";
-import { Pool } from "pg";
 import { ChessPlayer } from "@/types/chess";
-
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_DATABASE,
-  password: process.env.DB_PASSWORD,
-  port: Number(process.env.DB_PORT),
-});
+import prisma from "@/lib/prisma";
 
 export const getPlayers = async (): Promise<ChessPlayer[]> => {
-  'use server'
+  "use server";
   try {
-    const { rows } = await pool.query(
-        "SELECT name, score::float / 2 as score, ROUND(rating::numeric, 0) as rating FROM players",
-    );
-    return rows ?? [];
+    const players = await prisma.players.findMany();
+    return players.map(({ score, rating, ...rest }) => {
+      return {
+        score: score / 2,
+        rating: Math.round(rating),
+        ...rest,
+      };
+    });
   } catch (error) {
-    console.error(error)
-    return []
+    console.error(error);
+    return [];
   }
 };

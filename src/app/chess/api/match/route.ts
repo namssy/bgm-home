@@ -1,15 +1,6 @@
-import { Pool } from "pg";
 import { NextResponse } from "next/server";
 import { ChessMatchResult } from "@/types/chess";
-
-// PostgreSQL 연결 설정
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_DATABASE,
-  password: process.env.DB_PASSWORD,
-  port: Number(process.env.DB_PORT),
-});
+import { getMatch } from "@/utiles/match";
 
 function computeElo(ratingA: number, ratingB: number, scoreA: number): number {
   const k = 32;
@@ -59,44 +50,74 @@ export async function POST(req: Request) {
   }
 
   try {
-    await pool.query("BEGIN"); // 트랜잭션 시작
-    // Fetch ratings of both players from the database
-    const { rows: players } = await pool.query<{
-      name: string;
-      rating: number;
-    }>("SELECT * FROM players WHERE name IN ($1, $2)", [playerA, playerB]);
+    await prisma.$transaction(async (prisma) => {
+      const players = await prisma.players.findMany({
+        where: {
+          name: {
+            in: [playerA, playerB],
+          },
+        },
+      });
 
-    // 플레이어가 존재하지 않는다면 추가
-    if (!players.find((p) => p.name === playerA)) {
-      await pool.query("INSERT INTO players (name) VALUES ($1)", [playerA]);
-    }
-    if (!players.find((p) => p.name === playerB)) {
-      await pool.query("INSERT INTO players (name) VALUES ($1)", [playerB]);
-    }
+      if (!players.some((p) => p.name === playerA)) {
+        await prisma.players.create({
+          data: {
+            name: playerA,
+          },
+        });
+      }
 
-    const ratingA = players.find((p) => p.name === playerA)?.rating ?? 1200;
-    const ratingB = players.find((p) => p.name === playerB)?.rating ?? 1200;
+      if (!players.some((p) => p.name === playerB)) {
+        await prisma.players.create({
+          data: {
+            name: playerB,
+          },
+        });
+      }
 
-    const [scoreA, diff] = getRatingDiff({ result, ratingA, ratingB });
-    const scoreB = 2 - scoreA;
+      const ratingA = players.find((p) => p.name === playerA)?.rating ?? 1200;
+      const ratingB = players.find((p) => p.name === playerB)?.rating ?? 1200;
 
-    // Update ratings in the database
-    const updateQuery =
-      "UPDATE players SET rating = $1, score = score + $2 WHERE name = $3";
-    await pool.query(updateQuery, [ratingA + diff, scoreA, playerA]);
-    await pool.query(updateQuery, [ratingB - diff, scoreB, playerB]);
-    // Add the match result to a separate table (if you have one)
-    await pool.query(
-      "INSERT INTO matches (player_A, player_B, result, diff) VALUES ($1, $2, $3, $4)",
-      [playerA, playerB, result, diff],
-    );
+      const [scoreA, diff] = getRatingDiff({ result, ratingA, ratingB });
+      const scoreB = 2 - scoreA;
 
-    await pool.query("COMMIT"); // 트랜잭션 커밋
+      await prisma.players.update({
+        where: {
+          name: playerA,
+        },
+        data: {
+          rating: ratingA + diff,
+          score: {
+            increment: scoreA,
+          },
+        },
+      });
+
+      await prisma.players.update({
+        where: {
+          name: playerB,
+        },
+        data: {
+          rating: ratingB - diff,
+          score: {
+            increment: scoreB,
+          },
+        },
+      });
+
+      await prisma.matches.create({
+        data: {
+          player_a: playerA,
+          player_b: playerB,
+          result: result,
+          diff: diff,
+        },
+      });
+    });
 
     return NextResponse.json("");
   } catch (error) {
     console.error(error);
-    await pool.query("ROLLBACK"); // 에러가 발생하면 롤백
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },
@@ -106,9 +127,7 @@ export async function POST(req: Request) {
 export const dynamic = "force-dynamic";
 export async function GET() {
   try {
-    const { rows: matches } = await pool.query(
-      "SELECT *, ROUND(diff::numeric, 0) as diff FROM matches ORDER BY timestamp DESC",
-    );
+    const matches = getMatch();
     return NextResponse.json({ matches });
   } catch (error) {
     console.error(error);
