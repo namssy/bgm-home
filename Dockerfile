@@ -22,6 +22,7 @@ RUN yarn build
 
 # Start a new stage for the production image
 FROM node:18-slim
+RUN apt-get update -y && apt-get install -y openssl
 
 # Set the working directory in the Docker container
 WORKDIR /usr/src/app
