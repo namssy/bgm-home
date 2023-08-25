@@ -16,6 +16,7 @@ COPY . .
 ARG DATABASE_URL
 ENV DATABASE_URL ${DATABASE_URL}
 
+RUN npx prisma generate
 # Build the Next.js app
 RUN yarn build
 
