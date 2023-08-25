@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model matches {
+  match_id  Int          @id @default(autoincrement())
+  player_a  String       @db.VarChar(255)
+  player_b  String       @db.VarChar(255)
+  result    match_result
+  timestamp DateTime?    @default(now()) @db.Timestamp(6)
+  diff      Float        @default(0) @db.Real
+}
+
+model players {
+  player_id  Int       @id @default(autoincrement())
+  name       String    @unique @db.VarChar(255)
+  rating     Float?    @default(1200) @db.Real
+  score      Int?      @default(0)
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  updated_at DateTime? @default(now()) @db.Timestamp(6)
+}
+
+enum match_result {
+  winA
+  winB
+  draw
+}
