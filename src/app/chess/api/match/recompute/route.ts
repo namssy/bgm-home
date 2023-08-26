@@ -1,3 +1,4 @@
+import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { getRatingDiff } from "@/app/chess/api/match/route";
 

@@ -1,3 +1,4 @@
+import prisma from "@/lib/prisma";
 import { ChessMatch } from "@/types/chess";
 
 export const getMatch = async (): Promise<ChessMatch[]> => {

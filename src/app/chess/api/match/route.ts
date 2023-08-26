@@ -1,3 +1,4 @@
+import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { ChessMatchResult } from "@/types/chess";
 import { getMatch } from "@/utiles/match";
