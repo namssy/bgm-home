@@ -7,12 +7,12 @@ const nextConfig = {
     return [
       {
         source: "/",
-        destination: "/chess/add_match",
+        destination: "/chess/leaderboard",
         permanent: false,
       },
       {
         source: "/chess",
-        destination: "/chess/add_match",
+        destination: "/chess/leaderboard",
         permanent: false,
       },
     ];

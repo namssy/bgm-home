@@ -2,8 +2,8 @@ import "./globals.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "BGM Chess",
-  description: "BGM Chess leaderboards",
+  title: "BGM Home",
+  description: "Board Game Mania",
   viewport: "width=device-width, initial-scale=1.0",
 };
 

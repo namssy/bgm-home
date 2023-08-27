@@ -7,6 +7,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model user {
+  id        Int      @id @default(autoincrement())
+  name      String?
+  email     String   @unique
+  image     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model matches {
   match_id  Int          @id @default(autoincrement())
   player_a  String       @db.VarChar(255)
