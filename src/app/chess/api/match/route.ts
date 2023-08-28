@@ -52,7 +52,7 @@ export async function POST(req: Request) {
 
   try {
     await prisma.$transaction(async (prisma) => {
-      const players = await prisma.players.findMany({
+      const players = await prisma.chessPlayers.findMany({
         where: {
           name: {
             in: [playerA, playerB],
@@ -61,7 +61,7 @@ export async function POST(req: Request) {
       });
 
       if (!players.some((p) => p.name === playerA)) {
-        await prisma.players.create({
+        await prisma.chessPlayers.create({
           data: {
             name: playerA,
           },
@@ -69,20 +69,35 @@ export async function POST(req: Request) {
       }
 
       if (!players.some((p) => p.name === playerB)) {
-        await prisma.players.create({
+        await prisma.chessPlayers.create({
           data: {
             name: playerB,
           },
         });
       }
 
-      const ratingA = players.find((p) => p.name === playerA)?.rating ?? 1200;
-      const ratingB = players.find((p) => p.name === playerB)?.rating ?? 1200;
+      const playerWhite = await prisma.chessPlayers.findUnique({
+        where: {
+          name: playerA,
+        },
+      });
+      const playerBlack = await prisma.chessPlayers.findUnique({
+        where: {
+          name: playerB,
+        },
+      });
+
+      if (!playerWhite || !playerBlack) {
+        throw "Error";
+      }
+
+      const ratingA = playerWhite.rating;
+      const ratingB = playerBlack.rating;
 
       const [scoreA, diff] = getRatingDiff({ result, ratingA, ratingB });
       const scoreB = 2 - scoreA;
 
-      await prisma.players.update({
+      await prisma.chessPlayers.update({
         where: {
           name: playerA,
         },
@@ -94,7 +109,7 @@ export async function POST(req: Request) {
         },
       });
 
-      await prisma.players.update({
+      await prisma.chessPlayers.update({
         where: {
           name: playerB,
         },
@@ -106,10 +121,10 @@ export async function POST(req: Request) {
         },
       });
 
-      await prisma.matches.create({
+      await prisma.chessMatches.create({
         data: {
-          player_a: playerA,
-          player_b: playerB,
+          player_white_id: playerWhite.player_id,
+          player_black_id: playerBlack.player_id,
           result: result,
           diff: diff,
         },

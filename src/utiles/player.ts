@@ -1,10 +1,16 @@
-import { ChessPlayer } from "@/types/chess";
 import prisma from "@/lib/prisma";
+import { ChessPlayers, User } from ".prisma/client";
 
-export const getPlayers = async (): Promise<ChessPlayer[]> => {
+export const getPlayers = async (): Promise<
+  (ChessPlayers & { user: User | null })[]
+> => {
   "use server";
   try {
-    const players = await prisma.players.findMany();
+    const players = await prisma.chessPlayers.findMany({
+      include: {
+        user: true,
+      },
+    });
     return players.map(({ score, rating, ...rest }) => {
       return {
         score: score / 2,

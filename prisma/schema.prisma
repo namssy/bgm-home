@@ -7,31 +7,38 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user {
-  id        Int      @id @default(autoincrement())
-  name      String?
-  email     String   @unique
-  image     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model User {
+  id         Int           @id @default(autoincrement())
+  name       String?
+  email      String        @unique
+  image      String?
+  created_at DateTime      @default(now())
+  updated_at DateTime      @updatedAt
+  player     ChessPlayers?
 }
 
-model matches {
-  match_id  Int          @id @default(autoincrement())
-  player_a  String       @db.VarChar(255)
-  player_b  String       @db.VarChar(255)
-  result    match_result
-  timestamp DateTime?    @default(now()) @db.Timestamp(6)
-  diff      Float        @default(0) @db.Real
+model ChessMatches {
+  match_id        Int          @id @default(autoincrement())
+  result          match_result
+  timestamp       DateTime?    @default(now()) @db.Timestamp(6)
+  diff            Float        @default(0) @db.Real
+  player_white_id Int
+  player_black_id Int
+  player_black    ChessPlayers @relation("player_black", fields: [player_black_id], references: [player_id], onDelete: SetNull)
+  player_white    ChessPlayers @relation("player_white", fields: [player_white_id], references: [player_id], onDelete: SetNull)
 }
 
-model players {
-  player_id  Int       @id @default(autoincrement())
-  name       String    @unique @db.VarChar(255)
-  rating     Float    @default(1200) @db.Real
-  score      Int      @default(0)
-  created_at DateTime? @default(now()) @db.Timestamp(6)
-  updated_at DateTime? @default(now()) @db.Timestamp(6)
+model ChessPlayers {
+  player_id   Int            @id @default(autoincrement())
+  user_id     Int?           @unique
+  name        String         @unique @db.VarChar(255)
+  rating      Float          @default(1200) @db.Real
+  score       Int            @default(0)
+  created_at  DateTime?      @default(now()) @db.Timestamp(6)
+  updated_at  DateTime?      @default(now()) @db.Timestamp(6)
+  match_black ChessMatches[] @relation("player_black")
+  match_white ChessMatches[] @relation("player_white")
+  user        User?          @relation(fields: [user_id], references: [id])
 }
 
 enum match_result {

@@ -1,21 +1,10 @@
-import { $Enums } from ".prisma/client";
-
-export type ChessPlayer = {
-  player_id: number;
-  name: string;
-  rating: number;
-  score: number;
-  created_at: Date | null;
-  updated_at: Date | null;
-};
+import { $Enums, ChessMatches } from ".prisma/client";
 
 export type ChessMatchResult = $Enums.match_result;
-
-export interface ChessMatch {
-  match_id: number;
-  player_a: string;
-  player_b: string;
+export interface ChessLogs {
+  white: { name: string; image: string | null };
+  black: { name: string; image: string | null };
+  diff: number;
   result: ChessMatchResult;
   timestamp: Date | null;
-  diff: number;
 }

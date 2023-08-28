@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import { ChessPlayer } from "@/types/chess";
 import AutoSuggestInput from "@/components/AutoSuggestInput";
+import { ChessPlayers } from ".prisma/client";
 
 export default function AddMatch() {
   const [playerA, setPlayerA] = useState("");
@@ -13,7 +13,7 @@ export default function AddMatch() {
   useEffect(() => {
     const fetchPlayers = async () => {
       const response = await fetch("/chess/api/players");
-      const data = (await response.json()) as ChessPlayer[];
+      const data = (await response.json()) as ChessPlayers[];
       setPlayers(data.map(({ name }) => name));
     };
 
@@ -22,8 +22,6 @@ export default function AddMatch() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("/chess/api/match");
-
     const response = await fetch("/chess/api/match", {
       method: "POST",
       headers: {

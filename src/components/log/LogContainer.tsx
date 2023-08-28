@@ -1,6 +1,8 @@
 "use client";
-import { ChessMatch, ChessMatchResult } from "@/types/chess";
 import classNames from "classnames";
+import { ChessMatches } from ".prisma/client";
+import { ChessLogs, ChessMatchResult } from "@/types/chess";
+import { Avatar, Table } from "flowbite-react";
 
 const RESULT: Record<ChessMatchResult, string> = {
   winA: "White won",
@@ -18,47 +20,66 @@ const DeltaRating = ({ value }: { value: number }) => {
   );
 };
 
-const LogContainer = ({ matches }: { matches: ChessMatch[] }) => {
+const LogContainer = ({ logs }: { logs: ChessLogs[] }) => {
   return (
     <>
       <h1 className="text-3xl font-semibold mb-6 text-center">
         Match Results Log
       </h1>
       <div className="relative overflow-x-auto sm:rounded-lg">
-        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-              <th className="px-6 py-3 text-center">White</th>
-              <th className="px-6 py-3 text-center">Black</th>
-              <th className="px-6 py-3 text-center">Result</th>
-
-              <th className="px-6 py-3 hidden sm:table-cell text-center">
-                Timestamp
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {matches.map(
-              ({ player_a, player_b, diff, result, timestamp }, index) => (
-                <tr
-                  key={index}
-                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                >
-                  <td className="px-6 py-4text-center">
-                    {player_a}(<DeltaRating value={Math.round(diff)} />)
-                  </td>
-                  <td className="px-6 py-4text-center">
-                    {player_b}(<DeltaRating value={Math.round(-diff)} />)
-                  </td>
-                  <td className="px-6 py-4text-center">{RESULT[result]}</td>
-                  <td className="px-6 py-4 hidden sm:table-cell text-center">
-                    {timestamp ? new Date(timestamp).toLocaleString() : "-"}
-                  </td>
-                </tr>
-              ),
-            )}
-          </tbody>
-        </table>
+        <Table>
+          <Table.Head>
+            <Table.HeadCell className="text-center">White</Table.HeadCell>
+            <Table.HeadCell className="text-center">Black</Table.HeadCell>
+            <Table.HeadCell className="text-center">Result</Table.HeadCell>
+            <Table.HeadCell className="text-center hidden sm:table-cell">
+              Timestamp
+            </Table.HeadCell>
+          </Table.Head>
+          <Table.Body className="divide-y">
+            {logs.map(({ black, white, diff, result, timestamp }, index) => (
+              <Table.Row
+                key={index}
+                className="bg-white dark:border-gray-700 dark:bg-gray-800"
+              >
+                <Table.Cell>
+                  <div className="flex flex-wrap gap-3 items-center">
+                    <Avatar
+                      alt="User settings"
+                      size={"xs"}
+                      rounded
+                      img={white.image ?? undefined}
+                    />
+                    <div>
+                      {white.name}(
+                      <DeltaRating value={Math.round(diff)} />)
+                    </div>
+                  </div>
+                </Table.Cell>
+                <Table.Cell>
+                  <div className="flex flex-wrap gap-3 items-center">
+                    <Avatar
+                      alt="User settings"
+                      size={"xs"}
+                      rounded
+                      img={black.image ?? undefined}
+                    />
+                    <div>
+                      {black.name}(
+                      <DeltaRating value={Math.round(-diff)} />)
+                    </div>
+                  </div>
+                </Table.Cell>
+                <Table.Cell className="text-center">
+                  {RESULT[result]}
+                </Table.Cell>
+                <Table.Cell className="hidden sm:table-cell text-center">
+                  {timestamp ? new Date(timestamp).toLocaleString() : "-"}
+                </Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
       </div>
     </>
   );

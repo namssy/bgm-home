@@ -1,12 +1,14 @@
 "use client";
-import { ChessPlayer } from "@/types/chess";
+
+import { ChessPlayers, User } from ".prisma/client";
+import { Avatar, Table } from "flowbite-react";
 
 export default function LeaderboardContainer({
   playersByScore,
   playersByRating,
 }: {
-  playersByScore: ChessPlayer[];
-  playersByRating: ChessPlayer[];
+  playersByScore: (ChessPlayers & { user: User | null })[];
+  playersByRating: (ChessPlayers & { user: User | null })[];
 }) {
   return (
     <>
@@ -15,49 +17,65 @@ export default function LeaderboardContainer({
         <div>
           <h2 className="text-2xl font-semibold mb-4">By Score</h2>
           <div className="relative overflow-x-auto rounded-lg">
-            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                <tr>
-                  <th className="px-6 py-3 text-center">Name</th>
-                  <th className="px-6 py-3 text-center">Score</th>
-                </tr>
-              </thead>
-              <tbody>
+            <Table>
+              <Table.Head>
+                <Table.HeadCell className="text-center">Name</Table.HeadCell>
+                <Table.HeadCell className="text-center">Score</Table.HeadCell>
+              </Table.Head>
+              <Table.Body className="divide-y">
                 {playersByScore.map((player, index) => (
-                  <tr
-                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                  <Table.Row
+                    className="bg-white dark:border-gray-700 dark:bg-gray-800"
                     key={index}
                   >
-                    <td className="px-6 py-3 text-center">{player.name}</td>
-                    <td className="px-6 py-3 text-center">{player.score}</td>
-                  </tr>
+                    <Table.Cell className="flex flex-wrap gap-2 items-center">
+                      <Avatar
+                        alt="User settings"
+                        size={"xs"}
+                        rounded
+                        img={player.user?.image ?? undefined}
+                      />
+                      <div>{player.name}</div>
+                    </Table.Cell>
+                    <Table.Cell className="text-center">
+                      {player.score}
+                    </Table.Cell>
+                  </Table.Row>
                 ))}
-              </tbody>
-            </table>
+              </Table.Body>
+            </Table>
           </div>
         </div>
         <div>
           <h2 className="text-2xl font-semibold mb-4">By Rating</h2>
           <div className="relative overflow-x-auto rounded-lg">
-            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                <tr>
-                  <th className="px-6 py-3 text-center">Name</th>
-                  <th className="px-6 py-3 text-center">Score</th>
-                </tr>
-              </thead>
-              <tbody>
+            <Table>
+              <Table.Head>
+                <Table.HeadCell className="text-center">Name</Table.HeadCell>
+                <Table.HeadCell className="text-center">Score</Table.HeadCell>
+              </Table.Head>
+              <Table.Body className="divide-y">
                 {playersByRating.map((player, index) => (
-                  <tr
-                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                  <Table.Row
+                    className="bg-white dark:border-gray-700 dark:bg-gray-800"
                     key={index}
                   >
-                    <td className="px-6 py-3 text-center">{player.name}</td>
-                    <td className="px-6 py-3 text-center">{player.rating}</td>
-                  </tr>
+                    <Table.Cell className="flex flex-wrap gap-3 items-center">
+                      <Avatar
+                        alt="User settings"
+                        size={"xs"}
+                        rounded
+                        img={player.user?.image ?? undefined}
+                      />
+                      <div>{player.name}</div>
+                    </Table.Cell>
+                    <Table.Cell className="text-center">
+                      {player.rating}
+                    </Table.Cell>
+                  </Table.Row>
                 ))}
-              </tbody>
-            </table>
+              </Table.Body>
+            </Table>
           </div>
         </div>
       </div>

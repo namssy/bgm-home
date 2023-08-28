@@ -8,14 +8,14 @@ export async function POST() {
 
   try {
     await prisma.$transaction(async (prisma) => {
-      await prisma.players.updateMany({
+      await prisma.chessPlayers.updateMany({
         data: {
           rating: 1200,
           score: 0,
         },
       });
 
-      const matches = await prisma.matches.findMany({
+      const matches = await prisma.chessMatches.findMany({
         orderBy: {
           timestamp: "asc",
         },
@@ -23,7 +23,7 @@ export async function POST() {
 
       for (const match of matches) {
         const { result, player_a, player_b, match_id } = match;
-        const players = await prisma.players.findMany({
+        const players = await prisma.chessPlayers.findMany({
           where: {
             name: {
               in: [player_a, player_b],
@@ -40,7 +40,7 @@ export async function POST() {
         const scoreB = 2 - scoreA;
 
         // Update ratings in the database
-        await prisma.players.updateMany({
+        await prisma.chessPlayers.updateMany({
           where: {
             name: player_a,
           },
@@ -52,7 +52,7 @@ export async function POST() {
           },
         });
 
-        await prisma.players.updateMany({
+        await prisma.chessPlayers.updateMany({
           where: {
             name: player_b,
           },
@@ -64,7 +64,7 @@ export async function POST() {
           },
         });
 
-        await prisma.matches.update({
+        await prisma.chessMatches.update({
           where: {
             match_id: match_id,
           },
