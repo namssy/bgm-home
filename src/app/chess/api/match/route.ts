@@ -1,24 +1,13 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { ChessMatchResult } from "@/types/chess";
-import { getMatch } from "@/utiles/match";
+import { getMatch, getScore } from "@/utiles/match";
 
 function computeElo(ratingA: number, ratingB: number, scoreA: number): number {
   const k = 32;
   const expectedScoreA = 1 / (1 + Math.pow(10, (ratingB - ratingA) / 400));
   return ratingA + k * (scoreA - expectedScoreA);
 }
-
-const getScore = (result: ChessMatchResult) => {
-  switch (result) {
-    case "winA":
-      return 2;
-    case "winB":
-      return 0;
-    case "draw":
-      return 1;
-  }
-};
 
 export const getRatingDiff = ({
   result,

@@ -1,6 +1,5 @@
 "use client";
 import classNames from "classnames";
-import { ChessMatches } from ".prisma/client";
 import { ChessLogs, ChessMatchResult } from "@/types/chess";
 import { Avatar, Table } from "flowbite-react";
 
@@ -20,6 +19,24 @@ const DeltaRating = ({ value }: { value: number }) => {
   );
 };
 
+const handleSubmit = async (e: React.FormEvent, log: ChessLogs) => {
+  e.preventDefault();
+  const response = await fetch("/chess/api/match/remove", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ log }),
+  });
+  const data = await response.json();
+
+  if (response.ok) {
+    alert("Match removed successfully!");
+  } else {
+    alert("Failed to remove match.");
+  }
+}
+
 const LogContainer = ({ logs }: { logs: ChessLogs[] }) => {
   return (
     <>
@@ -35,6 +52,7 @@ const LogContainer = ({ logs }: { logs: ChessLogs[] }) => {
             <Table.HeadCell className="text-center hidden sm:table-cell">
               Timestamp
             </Table.HeadCell>
+            <Table.HeadCell />
           </Table.Head>
           <Table.Body className="divide-y">
             {logs.map(({ black, white, diff, result, timestamp }, index) => (
@@ -75,6 +93,11 @@ const LogContainer = ({ logs }: { logs: ChessLogs[] }) => {
                 </Table.Cell>
                 <Table.Cell className="hidden sm:table-cell text-center">
                   {timestamp ? new Date(timestamp).toLocaleString() : "-"}
+                </Table.Cell>
+                <Table.Cell>
+                  <button type="submit" onClick={(event) => handleSubmit(event, logs[index])}>
+                    ❌
+                  </button>
                 </Table.Cell>
               </Table.Row>
             ))}

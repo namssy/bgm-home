@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { ChessMatches } from ".prisma/client";
 import { ChessLogs } from "@/types/chess";
+import { ChessMatchResult } from "@/types/chess";
 
 export const getMatch = async (): Promise<ChessMatches[]> => {
   "use server";
@@ -44,5 +45,16 @@ export const getLogs = async (): Promise<ChessLogs[]> => {
   } catch (error) {
     console.error(error);
     return [];
+  }
+};
+
+export const getScore = (result: ChessMatchResult) => {
+  switch (result) {
+    case "winA":
+      return 2;
+    case "winB":
+      return 0;
+    case "draw":
+      return 1;
   }
 };
