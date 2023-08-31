@@ -13,7 +13,7 @@ export default function AddMatch() {
   useEffect(() => {
     const fetchPlayers = async () => {
       const response = await fetch("/chess/api/players");
-      const data = (await response.json()) as ChessPlayers[];
+      const data = (await response.json()) as Pick<ChessPlayers, "name">[];
       setPlayers(data.map(({ name }) => name));
     };
 

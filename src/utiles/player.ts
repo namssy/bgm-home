@@ -1,6 +1,22 @@
 import prisma from "@/lib/prisma";
 import { ChessPlayers, User } from ".prisma/client";
 
+export const getPlayerNames = async (): Promise<
+  Pick<ChessPlayers, "name">[]
+> => {
+  "use server";
+  try {
+    return prisma.chessPlayers.findMany({
+      select: {
+        name: true,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
 export const getPlayers = async (): Promise<
   (ChessPlayers & { user: User | null })[]
 > => {

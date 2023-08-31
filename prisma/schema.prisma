@@ -24,8 +24,12 @@ model ChessMatches {
   diff            Float        @default(0) @db.Real
   player_white_id Int
   player_black_id Int
-  player_black    ChessPlayers @relation("player_black", fields: [player_black_id], references: [player_id], onDelete: SetNull)
-  player_white    ChessPlayers @relation("player_white", fields: [player_white_id], references: [player_id], onDelete: SetNull)
+  player_black    ChessPlayers @relation("player_black", fields: [player_black_id], references: [player_id])
+  player_white    ChessPlayers @relation("player_white", fields: [player_white_id], references: [player_id])
+
+  @@index([timestamp])
+  @@index([player_white_id])
+  @@index([player_black_id])
 }
 
 model ChessPlayers {
@@ -39,6 +43,8 @@ model ChessPlayers {
   match_black ChessMatches[] @relation("player_black")
   match_white ChessMatches[] @relation("player_white")
   user        User?          @relation(fields: [user_id], references: [id])
+
+  @@index([player_id, user_id, name])
 }
 
 enum match_result {
