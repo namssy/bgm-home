@@ -7,8 +7,12 @@ export default function LeaderboardContainer({
   playersByScore,
   playersByRating,
 }: {
-  playersByScore: (ChessPlayers & { user: User | null })[];
-  playersByRating: (ChessPlayers & { user: User | null })[];
+  playersByScore: (Pick<ChessPlayers, "name" | "score" | "rating"> & {
+    user: Pick<User, "image"> | null;
+  })[];
+  playersByRating: (Pick<ChessPlayers, "name" | "score" | "rating"> & {
+    user: Pick<User, "image"> | null;
+  })[];
 }) {
   return (
     <>
