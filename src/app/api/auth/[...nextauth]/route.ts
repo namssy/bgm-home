@@ -11,7 +11,7 @@ export const authOptions: AuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn({ user }) {
       if (!user.email) return false;
       const email = user.email;
       if (email) {

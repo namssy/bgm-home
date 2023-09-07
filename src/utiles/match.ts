@@ -14,14 +14,26 @@ export const getMatch = async (): Promise<ChessMatches[]> => {
   }
 };
 
-export const getLogs = async (): Promise<ChessLogs[]> => {
+export const getLogs = async (options?: {
+  pageNo?: number;
+}): Promise<ChessLogs[]> => {
   "use server";
+  const pageNo = options?.pageNo ?? 1;
   try {
     const data = await prisma.chessMatches.findMany({
-      include: {
-        player_white: { include: { user: true } },
-        player_black: { include: { user: true } },
+      select: {
+        diff: true,
+        result: true,
+        timestamp: true,
+        player_white: {
+          select: { name: true, user: { select: { image: true } } },
+        },
+        player_black: {
+          select: { name: true, user: { select: { image: true } } },
+        },
       },
+      skip: 20 * (pageNo - 1),
+      take: 20,
       orderBy: [{ timestamp: "desc" }],
     });
     return data.map(

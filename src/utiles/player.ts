@@ -18,13 +18,18 @@ export const getPlayerNames = async (): Promise<
 };
 
 export const getPlayers = async (): Promise<
-  (ChessPlayers & { user: User | null })[]
+  (Pick<ChessPlayers, "name" | "score" | "rating"> & {
+    user: Pick<User, "image"> | null;
+  })[]
 > => {
   "use server";
   try {
     const players = await prisma.chessPlayers.findMany({
-      include: {
-        user: true,
+      select: {
+        name: true,
+        score: true,
+        rating: true,
+        user: { select: { image: true } },
       },
     });
     return players.map(({ score, rating, ...rest }) => {

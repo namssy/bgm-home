@@ -44,7 +44,8 @@ model ChessPlayers {
   match_white ChessMatches[] @relation("player_white")
   user        User?          @relation(fields: [user_id], references: [id])
 
-  @@index([player_id, user_id, name])
+  @@index([name])
+  @@index([user_id])
 }
 
 enum match_result {

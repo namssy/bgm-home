@@ -1,8 +1,7 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { ChessMatchResult } from "@/types/chess";
-import { getMatch } from "@/utiles/match";
-import { ChessPlayers } from ".prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const K_FACTOR = 32;
 const SCORES = {
@@ -33,16 +32,28 @@ export const getRatingDiff = ({
 };
 
 async function createPlayerIfNotExist(
+  client: Pick<PrismaClient, "chessPlayers">,
   playerName: string,
-  existingPlayers: ChessPlayers[],
 ) {
-  if (!existingPlayers.some((p) => p.name === playerName)) {
-    await prisma.chessPlayers.create({
+  const player = await client.chessPlayers.findUnique({
+    where: { name: playerName },
+  });
+
+  if (player) {
+    console.log("find player", playerName);
+    return player;
+  }
+
+  return client.chessPlayers
+    .create({
       data: {
         name: playerName,
       },
+    })
+    .then((player) => {
+      console.log("create player", playerName);
+      return player;
     });
-  }
 }
 
 export async function POST(req: Request) {
@@ -61,32 +72,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid data" }, { status: 400 });
   }
 
-  const existingPlayers = await prisma.chessPlayers.findMany({
-    where: {
-      name: {
-        in: [playerA, playerB],
-      },
-    },
-  });
-
-  await Promise.all([
-    createPlayerIfNotExist(playerA, existingPlayers),
-    createPlayerIfNotExist(playerB, existingPlayers),
-  ]);
-
   try {
-    await prisma.$transaction(async (tx) => {
+    const transaction = await prisma.$transaction(async (tx) => {
       const [playerWhite, playerBlack] = await Promise.all([
-        tx.chessPlayers.findUnique({
-          where: {
-            name: playerA,
-          },
-        }),
-        tx.chessPlayers.findUnique({
-          where: {
-            name: playerB,
-          },
-        }),
+        createPlayerIfNotExist(tx, playerA),
+        createPlayerIfNotExist(tx, playerB),
       ]);
 
       if (!playerWhite || !playerBlack) {
@@ -98,7 +88,7 @@ export async function POST(req: Request) {
 
       const [scoreA, diff] = getRatingDiff({ result, ratingA, ratingB });
       const scoreB = 2 - scoreA;
-      await Promise.all([
+      return Promise.all([
         tx.chessPlayers.update({
           where: {
             name: playerA,
@@ -131,8 +121,7 @@ export async function POST(req: Request) {
         }),
       ]);
     });
-
-    return NextResponse.json("");
+    return NextResponse.json(transaction);
   } catch (error) {
     console.error(error);
     return NextResponse.json(
@@ -142,15 +131,3 @@ export async function POST(req: Request) {
   }
 }
 export const dynamic = "force-dynamic";
-export async function GET() {
-  try {
-    const matches = await getMatch();
-    return NextResponse.json({ matches });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
-    );
-  }
-}
