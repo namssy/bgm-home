@@ -29,7 +29,11 @@ export const getPlayers = async (): Promise<
         name: true,
         score: true,
         rating: true,
-        user: { select: { image: true } },
+        user: {
+          select: {
+            image: true,
+          },
+        },
       },
     });
     return players.map(({ score, rating, ...rest }) => {

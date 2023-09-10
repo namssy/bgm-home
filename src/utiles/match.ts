@@ -16,45 +16,52 @@ export const getMatch = async (): Promise<ChessMatches[]> => {
 
 export const getLogs = async (options?: {
   pageNo?: number;
-}): Promise<ChessLogs[]> => {
+}): Promise<{ data: ChessLogs[]; count: number }> => {
   "use server";
   const pageNo = options?.pageNo ?? 1;
   try {
-    const data = await prisma.chessMatches.findMany({
-      select: {
-        diff: true,
-        result: true,
-        timestamp: true,
-        player_white: {
-          select: { name: true, user: { select: { image: true } } },
-        },
-        player_black: {
-          select: { name: true, user: { select: { image: true } } },
-        },
-      },
-      skip: 20 * (pageNo - 1),
-      take: 20,
-      orderBy: [{ timestamp: "desc" }],
-    });
-    return data.map(
-      ({ player_white, player_black, diff, result, timestamp }) => {
-        return {
-          white: {
-            name: player_white.name,
-            image: player_white.user?.image ?? null,
+    const [data, count] = await Promise.all([
+      prisma.chessMatches.findMany({
+        select: {
+          diff: true,
+          result: true,
+          timestamp: true,
+          player_white: {
+            select: { name: true, user: { select: { image: true } } },
           },
-          black: {
-            name: player_black.name,
-            image: player_black.user?.image ?? null,
+          player_black: {
+            select: { name: true, user: { select: { image: true } } },
           },
-          diff,
-          result,
-          timestamp,
-        };
-      },
-    );
+        },
+        skip: 10 * (pageNo - 1),
+        take: 10,
+        orderBy: [{ timestamp: "desc" }],
+      }),
+      prisma.chessMatches.count(),
+    ]);
+
+    return {
+      data: data.map(
+        ({ player_white, player_black, diff, result, timestamp }) => {
+          return {
+            white: {
+              name: player_white.name,
+              image: player_white.user?.image ?? null,
+            },
+            black: {
+              name: player_black.name,
+              image: player_black.user?.image ?? null,
+            },
+            diff,
+            result,
+            timestamp,
+          };
+        },
+      ),
+      count,
+    };
   } catch (error) {
     console.error(error);
-    return [];
+    return { data: [], count: 0 };
   }
 };

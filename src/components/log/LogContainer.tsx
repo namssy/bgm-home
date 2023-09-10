@@ -1,14 +1,16 @@
 "use client";
 import classNames from "classnames";
-import { ChessMatches } from ".prisma/client";
 import { ChessLogs, ChessMatchResult } from "@/types/chess";
-import { Avatar, Table } from "flowbite-react";
+import { Avatar, Pagination, Table } from "flowbite-react";
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
 
 const RESULT: Record<ChessMatchResult, string> = {
   winA: "White won",
   winB: "Black won",
   draw: "Draw",
 };
+
+const PAGE_SIZE = 10;
 
 const DeltaRating = ({ value }: { value: number }) => {
   return (
@@ -20,12 +22,36 @@ const DeltaRating = ({ value }: { value: number }) => {
   );
 };
 
-const LogContainer = ({ logs }: { logs: ChessLogs[] }) => {
+const LogContainer = ({
+  logs,
+  pageNo,
+  total,
+}: {
+  logs: ChessLogs[];
+  pageNo: number;
+  total: number;
+}) => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const totalPages = Math.ceil(total / PAGE_SIZE);
+
+  const changePage = (page: number) => {
+    // now you got a read/write object
+    const current = new URLSearchParams(Array.from(searchParams.entries())); // -> has to use this form
+    current.set("p", page.toString());
+    const search = current.toString();
+    const query = search ? `?${search}` : "";
+    router.push(`${pathname}${query}`);
+  };
+
   return (
     <>
       <h1 className="text-3xl font-semibold mb-6 text-center">
         Match Results Log
       </h1>
+
       <div className="relative overflow-x-auto sm:rounded-lg">
         <Table>
           <Table.Head>
@@ -81,6 +107,13 @@ const LogContainer = ({ logs }: { logs: ChessLogs[] }) => {
           </Table.Body>
         </Table>
       </div>
+      <Pagination
+        currentPage={pageNo}
+        showIcons
+        layout="navigation"
+        onPageChange={changePage}
+        totalPages={totalPages}
+      />
     </>
   );
 };
