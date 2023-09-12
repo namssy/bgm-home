@@ -46,6 +46,8 @@ model ChessPlayers {
 
   @@index([name])
   @@index([user_id])
+  @@index([score])
+  @@index([rating])
 }
 
 enum match_result {

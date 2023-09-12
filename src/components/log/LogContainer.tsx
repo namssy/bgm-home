@@ -40,7 +40,7 @@ const LogContainer = ({
   const changePage = (page: number) => {
     // now you got a read/write object
     const current = new URLSearchParams(Array.from(searchParams.entries())); // -> has to use this form
-    current.set("p", page.toString());
+    current.set("p", (page ?? "1").toString());
     const search = current.toString();
     const query = search ? `?${search}` : "";
     router.push(`${pathname}${query}`);

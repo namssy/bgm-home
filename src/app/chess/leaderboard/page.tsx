@@ -1,18 +1,24 @@
 import LeaderboardContainer from "@/components/leaderboard/LeaderboardContainer";
-import { getPlayers } from "@/utiles/player";
+import { getLeaderboardPlayerList } from "@/utiles/player";
 
 // Opt out of caching for all data requests in the route segment
 export const dynamic = "force-dynamic";
 
-export default async function Leaderboard() {
-  const players = await getPlayers();
+export default async function Leaderboard({
+  searchParams,
+}: {
+  searchParams: { p: string };
+}) {
+  const pageNo: number = parseInt(searchParams.p ?? "1") ?? 1;
+
+  const { score, rating, count } = await getLeaderboardPlayerList({ pageNo });
 
   return (
     <LeaderboardContainer
-      playersByScore={[...players.sort((a, b) => b.score - a.score)]}
-      playersByRating={[
-        ...players.sort((a, b) => Number(b.rating) - Number(a.rating)),
-      ]}
+      playersByScore={score}
+      playersByRating={rating}
+      pageNo={pageNo}
+      total={count}
     />
   );
 }
